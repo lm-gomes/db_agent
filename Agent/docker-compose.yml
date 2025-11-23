@@ -1,0 +1,22 @@
+services:
+  database:
+    image: postgres
+    restart: always
+    shm_size: 128mb
+    ports: 
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: senha123
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+  app:
+    build: ./agent
+    depends_on:
+      database:
+        condition: service_healthy
+
